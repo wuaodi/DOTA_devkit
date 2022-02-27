@@ -5,6 +5,7 @@ import os
 import matplotlib.pyplot as plt
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Polygon, Circle
+import matplotlib.image as mpimg
 import numpy as np
 import dota_utils as util
 from collections import defaultdict
@@ -64,6 +65,7 @@ class DOTA:
             return objects
         outobjects = [obj for obj in objects if (obj['name'] in catNms)]
         return outobjects
+
     def showAnns(self, objects, imgId, range):
         """
         :param catNms: category names
@@ -96,6 +98,8 @@ class DOTA:
         ax.add_collection(p)
         p = PatchCollection(circles, facecolors='red')
         ax.add_collection(p)
+        plt.show()    # don't forget it
+
     def loadImgs(self, imgids=[]):
         """
         :param imgids: integer ids specifying img
@@ -108,14 +112,17 @@ class DOTA:
         for imgid in imgids:
             filename = os.path.join(self.imagepath, imgid + '.png')
             print('filename:', filename)
-            img = cv2.imread(filename)
+            img = mpimg.imread(filename) # use plt imread image
+            # img = cv2.imread(filename)
             imgs.append(img)
         return imgs
 
-# if __name__ == '__main__':
-#     examplesplit = DOTA('examplesplit')
-#     imgids = examplesplit.getImgIds(catNms=['plane'])
-#     img = examplesplit.loadImgs(imgids)
-#     for imgid in imgids:
-#         anns = examplesplit.loadAnns(imgId=imgid)
-#         examplesplit.showAnns(anns, imgid, 2)
+if __name__ == '__main__':
+    examplesplit = DOTA('example')
+    imgids = examplesplit.getImgIds(catNms=['plane']) # get the imgids which contains all the catNms
+    img = examplesplit.loadImgs(imgids)
+    print("kkkkk",imgids)
+    for imgid in imgids:
+        print("-------------------")
+        anns = examplesplit.loadAnns(imgId=imgid, catNms=['plane'])
+        examplesplit.showAnns(anns, imgid, 2)
